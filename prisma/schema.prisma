@@ -1,27 +1,36 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+model post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  Int
+  user      user     @relation(fields: [authorId], references: [id], map: "Post_authorId_fkey")
 
-model User{
-  id Int @id default(autoincrement())
-  name String(50)
-email String(50) @unique
-password String(50) 
-is_active Boolean @default(true)
-created_at DateTime @default(now())
-updated_at DateTime @updated_at
+  @@index([authorId], map: "Post_authorId_fkey")
+}
 
+model profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique(map: "Profile_userId_key")
+  user   user    @relation(fields: [userId], references: [id], map: "Profile_userId_fkey")
+}
+
+model user {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique(map: "User_email_key")
+  name    String?
+  post    post[]
+  profile profile?
 }
