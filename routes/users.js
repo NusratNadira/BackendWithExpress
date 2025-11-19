@@ -26,14 +26,13 @@ router.get('/', async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-    const { name, email} = req.body
+    const { name, email, password, is_active } = req.body
 
     try {
         // const [results, fields] = await db.query('INSERT INTO users (name, email, password, is_active) VALUES (?, ?, ?, ?)', [name, email, password, is_active]);
         const results = await db.user.create({
             data: {
-                name: name,
-                email: email
+                name, email, password, is_active
             }
             // data: {
             //     name,
