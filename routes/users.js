@@ -6,15 +6,30 @@ const db = require('./db')
 
 router.get('/', async (req, res) => {
     // res.send('Hello World! From users')
+
+    // console.log('req.query=>', req.query)
+    const params = JSON.parse(JSON.stringify(req.query))
+    // console.log('params=>', params)
     try {
         // const [results, fields] = await db.query('SELECT * FROM users');
         const results = await db.user.findMany({
             where: {
-                is_active: 1
+                    OR: [
+                        {
+                            email: {
+                                contains: params.search
+                            }
+                        },
+                        {
+                            name: {
+                                contains: params.search
+                            }
+                        }
+                    ]
             }
         });
 
-        console.log(results); // results contains rows returned by server
+        // console.log(results); // results contains rows returned by server
         // console.log(fields); // fields contains extra meta data about results, if available
 
         res.send(results)
@@ -28,18 +43,20 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { name, email, password, is_active } = req.body
 
+    console.log('req.body=>', req.body)
+
     try {
         // const [results, fields] = await db.query('INSERT INTO users (name, email, password, is_active) VALUES (?, ?, ?, ?)', [name, email, password, is_active]);
         const results = await db.user.create({
-            data: {
-                name, email, password, is_active
-            }
             // data: {
-            //     name,
-            //     email,
-            //     password,
-            //     is_active
+            //     name, email, password, is_active
             // }
+            data: {
+                name,
+                email,
+                password,
+                is_active: is_active ? 1 : 0
+            }
         });
         res.status(201).send({
             message: 'User created successfully',
@@ -66,8 +83,9 @@ router.put('/:id', async (req, res) => {
             },
             data: {
                 name,
-                email
-               
+                email,
+                password,
+                is_active: is_active ? 1 : 0
             }
         });
        
