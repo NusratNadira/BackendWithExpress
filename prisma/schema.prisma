@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model post {
@@ -27,42 +27,14 @@ model profile {
   user   user    @relation(fields: [userId], references: [id], map: "Profile_userId_fkey")
 }
 
-model department {
-  id    Int    @id @default(autoincrement())
-  name  String @unique(map: "Department_name_key")
-  // relation back to users
-  user  user[]
-
-  @@map("department")
-}
-
-model designation {
-  id    Int    @id @default(autoincrement())
-  title String @unique(map: "Designation_title_key")
-  // relation back to users
-  user  user[]
-
-  @@map("designation")
-}
-
 model user {
-  id            Int         @id @default(autoincrement())
-  email         String      @unique(map: "User_email_key")
-  name          String?
-  password      String?
-  is_active     Int?        @default(1) @db.TinyInt
-  created_at    DateTime?   @default(now()) @db.Timestamp(0)
-  udpated_at    DateTime?   @db.Timestamp(0)
-  post          post[]
-  profile       profile?
-
-  // new relations to department and designation
-  departmentId  Int? 
-  designationId Int?
-
-  department    department? @relation(fields: [departmentId], references: [id], map: "User_departmentId_fkey")
-  designation   designation?@relation(fields: [designationId], references: [id], map: "User_designationId_fkey")
-
-  @@index([departmentId], map: "User_departmentId_fkey")
-  @@index([designationId], map: "User_designationId_fkey")
+  id         Int       @id @default(autoincrement())
+  email      String    @unique(map: "User_email_key")
+  name       String?
+  password   String?
+  is_active  Int?      @default(1) @db.TinyInt
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  post       post[]
+  profile    profile?
 }
