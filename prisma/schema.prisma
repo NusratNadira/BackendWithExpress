@@ -1,27 +1,60 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+model department {
+  id   Int    @id @default(autoincrement())
+  name String @unique(map: "Department_name_key")
+  user user[]
+}
 
-model User{
-  id Int @id default(autoincrement())
-  name String(50)
-email String(50) @unique
-password String(50) 
-is_active Boolean @default(true)
-created_at DateTime @default(now())
-updated_at DateTime @updated_at
+model designation {
+  id    Int    @id @default(autoincrement())
+  title String @unique(map: "Designation_title_key")
+  user  user[]
+}
 
+model post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  Int
+  user      user     @relation(fields: [authorId], references: [id], map: "Post_authorId_fkey")
+
+  @@index([authorId], map: "Post_authorId_fkey")
+}
+
+model profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique(map: "Profile_userId_key")
+  user   user    @relation(fields: [userId], references: [id], map: "Profile_userId_fkey")
+}
+
+model user {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique(map: "User_email_key")
+  name          String?
+  password      String?
+  is_active     Int?         @default(1) @db.TinyInt
+  created_at    DateTime?    @default(now()) @db.Timestamp(0)
+  departmentId  Int?
+  designationId Int?
+  udpated_at    DateTime?    @db.Timestamp(0)
+  post          post[]
+  profile       profile?
+  department    department?  @relation(fields: [departmentId], references: [id], map: "User_departmentId_fkey")
+  designation   designation? @relation(fields: [designationId], references: [id], map: "User_designationId_fkey")
+
+  @@index([departmentId], map: "User_departmentId_fkey")
+  @@index([designationId], map: "User_designationId_fkey")
 }

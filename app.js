@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('Hello World! Naimur')
 })
  
-app.use('/user', require('./routes/users'));
+app.use('/users', require('./routes/users'));
  
 app.use('/static', express.static('public'));
  
