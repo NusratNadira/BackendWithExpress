@@ -22,13 +22,15 @@ const port = 4000
 
 // Import Routes
 const userRoutes = require('./routes/users')
-const departmentRoutes = require('./routes/departments')   // ⭐ NEW
+const departmentRoutes = require('./routes/departments')
+const productRoutes = require('./routes/product')     // ⭐ CHANGED HERE
 
 app.use(express.json())
 
 // Register Routes
 app.use('/users', userRoutes)
-app.use('/departments', departmentRoutes)                  // ⭐ NEW
+app.use('/departments', departmentRoutes)
+app.use('/product', productRoutes)                   // ⭐ CHANGED HERE
 
 // Default route
 app.get('/', (req, res) => {
