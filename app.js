@@ -18,25 +18,29 @@ var dynamicCorsOptions = function (req, callback) {
 
 app.use(cors(dynamicCorsOptions));
 
-const port = 4000
+const port = 4000;
 
-// Import Routes
-const userRoutes = require('./routes/users')
-const departmentRoutes = require('./routes/departments')
-const productRoutes = require('./routes/product')     // ⭐ CHANGED HERE
+// Routes
+const userRoutes = require('./routes/users');
+const departmentRoutes = require('./routes/departments');
+const designationRoutes = require('./routes/designation');
+const productRoutes = require('./routes/products'); 
+const productTypesRoutes = require('./routes/productTypes'); 
 
-app.use(express.json())
+app.use(express.json());
 
-// Register Routes
-app.use('/users', userRoutes)
-app.use('/departments', departmentRoutes)
-app.use('/product', productRoutes)                   // ⭐ CHANGED HERE
+// Register route handlers
+app.use('/users', userRoutes);
+app.use('/departments', departmentRoutes);
+app.use('/designation', designationRoutes);
+app.use('/products', productRoutes); // ✔ plural
+app.use('/productTypes', productTypesRoutes); // ✔ plural
 
 // Default route
 app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+  res.send('Hello World!');
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});

@@ -67,3 +67,25 @@ model user {
   @@index([departmentId], map: "User_departmentId_fkey")
   @@index([designationId], map: "User_designationId_fkey")
 }
+
+model products {
+  id              Int       @id @default(autoincrement()) @db.UnsignedInt
+  name            String?   @db.VarChar(255)
+  description     String?   @db.VarChar(255)
+  image           String?   @db.Text
+  unit_id         Int?
+  brand_id        Int?
+  product_type_id Int?
+  is_active       Int?      @default(1) @db.TinyInt
+  created_at      DateTime? @default(now()) @db.Timestamp(0)
+  updated_at      DateTime? @db.Timestamp(0)
+}
+
+model product_types {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  name       String?   @db.VarChar(255)
+  parent_id  Int?
+  is_active  Int?      @default(1) @db.TinyInt
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
